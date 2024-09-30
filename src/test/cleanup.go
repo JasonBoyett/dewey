@@ -8,10 +8,10 @@ import (
 
 func errorCleanup(trigger error, rootPath string) error {
 	fileText := []string{
-		"The rest of this directory should be empty.",
-		"If there are any other files or directories in this directory the previous",
-		"test failed to clean up.",
-		"Do not manually create any files or directories in this directory.",
+		"The rest of this directory should be empty.\n",
+		"If there are any other files or directories in this directory the previous\n",
+		"test failed to clean up.\n",
+		"Do not manually create any files or directories in this directory.\n",
 	}
 
 	rootDir := filepath.Dir(rootPath)
