@@ -39,7 +39,7 @@ func setup() (os.File, error) {
 	if err != nil {
 		return os.File{}, err
 	}
-	rootPath := filepath.Join(baseDir, "test", "test_dir")
+	rootPath := filepath.Join(baseDir, "test_dir")
 	rootFile, err := os.Open(rootPath)
 	if err != nil {
 		err = errorCleanup(err, rootPath)
@@ -59,6 +59,5 @@ func setup() (os.File, error) {
 		return os.File{}, SetupError{Err: err}
 	}
 
-	cleanup(rootPath)
 	return *rootFile, err
 }
