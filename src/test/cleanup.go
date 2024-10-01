@@ -2,16 +2,29 @@ package test
 
 import (
 	"bufio"
+	"errors"
 	"os"
 	"path/filepath"
 )
 
 func errorCleanup(trigger error, rootPath string) error {
+	err := cleanup(rootPath)
+	if err != nil {
+		if errors.Is(err, CleanupError{}) {
+			return err
+		} else {
+			return CleanupError{Err: err}
+		}
+	}
+	return trigger
+}
+
+func cleanup(rootPath string) error {
 	fileText := []string{
-		"The rest of this directory should be empty.\n",
-		"If there are any other files or directories in this directory the previous\n",
-		"test failed to clean up.\n",
-		"Do not manually create any files or directories in this directory.\n",
+		"The rest of this directory should be empty.",
+		"If there are any other files or directories in this directory the previous",
+		"test failed to clean up.",
+		"Do not manually create any files or directories in this directory.",
 	}
 
 	rootDir := filepath.Dir(rootPath)
@@ -35,16 +48,10 @@ func errorCleanup(trigger error, rootPath string) error {
 	writer := bufio.NewWriter(rootFile)
 	defer writer.Flush()
 	for _, line := range fileText {
-		_, err = writer.WriteString(line)
+		_, err = writer.WriteString(line + "\n")
 		if err != nil {
 			return CleanupError{Err: err}
 		}
 	}
-
-	return trigger
-}
-
-func cleanup(trigger error) error {
-	// TODO: implement cleanup function
-	return trigger
+	return nil
 }

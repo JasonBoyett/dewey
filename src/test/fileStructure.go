@@ -2,16 +2,12 @@ package test
 
 import (
 	"bufio"
-	"errors"
 	"os"
 	"path/filepath"
 	"sync"
 )
 
-// the setup function creates a temporary file structure for testing
-//
-// The test file system will be set up like this:
-//
+//  the file structure will be set up like this:
 //	test_dir/
 //	├── root.txt
 //	├── dir1/
@@ -36,34 +32,6 @@ import (
 //
 // root.txt should have the following text:
 // "Hello from the Dewey test suite!"
-func setup() (os.File, error) {
-	baseDir, err := os.Getwd()
-	if err != nil {
-		return os.File{}, err
-	}
-	rootPath := filepath.Join(baseDir, "test", "test_dir")
-	rootFile, err := os.Open(rootPath)
-	if err != nil {
-		err = errorCleanup(err, rootPath)
-		if errors.Is(err, CleanupError{}) {
-			return os.File{}, err
-		}
-		return os.File{}, SetupError{Err: err}
-	}
-
-	files, err := buildFileStructure(rootPath)
-	if err != nil {
-		return os.File{}, SetupError{Err: err}
-	}
-
-	err = fillFiles(files, rootPath)
-	if err != nil {
-		return os.File{}, SetupError{Err: err}
-	}
-
-	cleanup(rootPath)
-	return *rootFile, err
-}
 
 func buildFileStructure(base string) (map[os.File][]string, error) {
 	files := map[os.File][]string{}
