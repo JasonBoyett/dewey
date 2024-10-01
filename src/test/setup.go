@@ -40,6 +40,10 @@ func setup() (os.File, error) {
 		return os.File{}, err
 	}
 	rootPath := filepath.Join(baseDir, "test_dir")
+	err = os.MkdirAll(rootPath, 0755)
+	if err != nil {
+		return os.File{}, SetupError{Err: err}
+	}
 	rootFile, err := os.Open(rootPath)
 	if err != nil {
 		err = errorCleanup(err, rootPath)
@@ -54,7 +58,7 @@ func setup() (os.File, error) {
 		return os.File{}, SetupError{Err: err}
 	}
 
-	err = fillFiles(files, rootPath)
+	err = fillFiles(files)
 	if err != nil {
 		return os.File{}, SetupError{Err: err}
 	}

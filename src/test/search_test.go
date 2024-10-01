@@ -5,8 +5,9 @@ import (
 )
 
 func TestSearch(t *testing.T) {
-	_, err := setup()
+	startFile, err := setup()
 	if err != nil {
 		t.Fatal(err)
 	}
+	defer startFile.Close()
 }

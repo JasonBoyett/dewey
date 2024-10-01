@@ -6,17 +6,19 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func errorCleanup(trigger error, rootPath string) error {
-	err := cleanup(rootPath)
-	if err != nil {
-		if errors.Is(err, CleanupError{}) {
-			return err
-		} else {
-			return CleanupError{Err: err}
-		}
-	}
+	// fmt.Println("errorCleanup")
+	// err := cleanup(rootPath)
+	// if err != nil {
+	// 	if errors.Is(err, CleanupError{}) {
+	// 		return err
+	// 	} else {
+	// 		return CleanupError{Err: err}
+	// 	}
+	// }
 	return trigger
 }
 
@@ -62,6 +64,9 @@ func cleanup(rootPath string) error {
 
 func backtrackTestDir(tgt, dir string) (string, error) {
 	for {
+		if !strings.Contains(dir, tgt) {
+			return "", errors.New(fmt.Sprintf("%s not found in %s", tgt, dir))
+		}
 		if filepath.Base(dir) == tgt {
 			return dir, nil
 		}

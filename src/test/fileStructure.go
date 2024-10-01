@@ -38,7 +38,7 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 	// create the root directory
 	err := os.MkdirAll(base, 0755)
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 
 	// create the root file
@@ -46,7 +46,7 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 	rootFile, err := os.Create(fileName)
 	defer rootFile.Close()
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 	files[*rootFile] = []string{"Hello from the Dewey test suite!"}
 
@@ -54,7 +54,7 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 	dir1 := filepath.Join(base, "dir1")
 	err = os.MkdirAll(dir1, 0755)
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 
 	// create file1.txt
@@ -62,7 +62,7 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 	file1, err := os.Create(fileName)
 	defer file1.Close()
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 	files[*file1] = []string{"Hello from the Dewey test suite!"}
 
@@ -71,21 +71,21 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 	image1, err := os.Create(fileName)
 	defer image1.Close()
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 
 	// create dir2
 	dir2 := filepath.Join(base, "dir2")
 	err = os.MkdirAll(dir2, 0755)
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 
 	// create sub_dir1
 	subDir1 := filepath.Join(dir2, "sub_dir1")
 	err = os.MkdirAll(subDir1, 0755)
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 
 	// create word_doc1.docx
@@ -93,7 +93,7 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 	wordDoc1, err := os.Create(fileName)
 	defer wordDoc1.Close()
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 
 	// create word_doc2.docx
@@ -101,7 +101,7 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 	wordDoc2, err := os.Create(fileName)
 	defer wordDoc2.Close()
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 
 	// create some_image.jpg
@@ -109,7 +109,7 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 	someImage, err := os.Create(fileName)
 	defer someImage.Close()
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 
 	// create word_doc3.docx
@@ -117,21 +117,21 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 	wordDoc3, err := os.Create(fileName)
 	defer wordDoc3.Close()
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 
 	// create sub_dir2
 	subDir2 := filepath.Join(dir2, "sub_dir2")
 	err = os.MkdirAll(subDir2, 0755)
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 
 	fileName = filepath.Join(subDir2, "some_code1.rb")
 	someCode1, err := os.Create(fileName)
 	defer someCode1.Close()
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 	code := []string{"puts 'Hello from the Dewey test suite!'"}
 	files[*someCode1] = code
@@ -140,7 +140,7 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 	someCode2, err := os.Create(fileName)
 	defer someCode2.Close()
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 	code = []string{"puts 'Hello again from the Dewey test suite!'"}
 	files[*someCode2] = code
@@ -149,7 +149,7 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 	someCode3, err := os.Create(fileName)
 	defer someCode3.Close()
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 	code = []string{"puts 'Hello once again from the Dewey test suite!'"}
 	files[*someCode3] = code
@@ -158,7 +158,7 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 	someCode4, err := os.Create(fileName)
 	defer someCode4.Close()
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 	code = []string{
 		"Class SomeCode4 {",
@@ -173,38 +173,38 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 	hiddenDir := filepath.Join(dir2, ".hidden_dir")
 	err = os.MkdirAll(hiddenDir, 0755)
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 
 	fileName = filepath.Join(subDir1, "hidden_file1.txt")
 	hiddenFile1, err := os.Create(fileName)
 	defer hiddenFile1.Close()
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 	fileName = filepath.Join(subDir1, "hidden_file2.txt")
 	hiddenFile2, err := os.Create(fileName)
 	defer hiddenFile2.Close()
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 	fileName = filepath.Join(subDir1, "hidden_file3.txt")
 	hiddenFile3, err := os.Create(fileName)
 	defer hiddenFile3.Close()
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 	fileName = filepath.Join(subDir1, "hidden_file4.txt")
 	hiddenFile4, err := os.Create(fileName)
 	defer hiddenFile4.Close()
 	if err != nil {
-		return map[os.File][]string{}, errorCleanup(SetupError{Err: err}, base)
+		return map[os.File][]string{}, SetupError{Err: err}
 	}
 
 	return files, nil
 }
 
-func fillFiles(files map[os.File][]string, root string) error {
+func fillFiles(files map[os.File][]string) error {
 	var wg sync.WaitGroup
 	errorChan := make(chan error)
 
@@ -213,7 +213,6 @@ func fillFiles(files map[os.File][]string, root string) error {
 		go fillFile(
 			&file,
 			lines,
-			root,
 			errorChan,
 			&wg,
 		)
@@ -233,7 +232,6 @@ func fillFiles(files map[os.File][]string, root string) error {
 func fillFile(
 	file *os.File,
 	lines []string,
-	root string,
 	ch chan<- error,
 	wg *sync.WaitGroup,
 ) {
@@ -243,7 +241,7 @@ func fillFile(
 	for _, line := range lines {
 		_, err := writer.WriteString(line + "\n")
 		if err != nil {
-			ch <- errorCleanup(SetupError{Err: err}, root)
+			ch <- SetupError{Err: err}
 		}
 	}
 }
