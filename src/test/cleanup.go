@@ -3,6 +3,7 @@ package test
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 )
@@ -26,14 +27,17 @@ func cleanup(rootPath string) error {
 		"test failed to clean up.",
 		"Do not manually create any files or directories in this directory.",
 	}
-
-	rootDir := filepath.Dir(rootPath)
-	err := os.RemoveAll(rootDir)
+	rootPath, err := backtrackTestDir("test_dir", rootPath)
 	if err != nil {
 		return CleanupError{Err: err}
 	}
 
-	err = os.MkdirAll(rootDir, 0755)
+	err = os.RemoveAll(rootPath)
+	if err != nil {
+		return CleanupError{Err: err}
+	}
+
+	err = os.MkdirAll(rootPath, 0755)
 	if err != nil {
 		return CleanupError{Err: err}
 	}
@@ -54,4 +58,16 @@ func cleanup(rootPath string) error {
 		}
 	}
 	return nil
+}
+
+func backtrackTestDir(tgt, dir string) (string, error) {
+	for {
+		if filepath.Base(dir) == tgt {
+			return dir, nil
+		}
+		dir = filepath.Dir(dir)
+		if dir == "/" {
+			return "", errors.New(fmt.Sprintf("%s not found", tgt))
+		}
+	}
 }
