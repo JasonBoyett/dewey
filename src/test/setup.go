@@ -4,13 +4,16 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"testing"
 )
 
 // the setup function creates a temporary file structure for testing
 //
 // The test file system will be set up like this:
 //
-//	test_dir/
+//	test_config/ <- the mock dewey configuration directory
+//	test_libray/ <- the mock dewey library directory
+//	test_dir/ <- the root of the mock file system
 //	├── root.txt
 //	├── dir1/
 //	│   ├── file1.txt
@@ -34,34 +37,63 @@ import (
 //
 // root.txt should have the following text:
 // "Hello from the Dewey test suite!"
-func setup() (os.File, error) {
+func setup(t *testing.T) (TestInfo, error) {
 	baseDir, err := os.Getwd()
 	if err != nil {
-		return os.File{}, err
+		return TestInfo{}, err
 	}
+
+	configPath := filepath.Join(baseDir, "test_config")
+	err = os.MkdirAll(configPath, 0755)
+	if err != nil {
+		return TestInfo{}, SetupError{Err: err}
+	}
+
+	libraryPath := filepath.Join(baseDir, "test_library")
+	err = os.MkdirAll(libraryPath, 0755)
+	if err != nil {
+		return TestInfo{}, SetupError{Err: err}
+	}
+
 	rootPath := filepath.Join(baseDir, "test_dir")
 	err = os.MkdirAll(rootPath, 0755)
 	if err != nil {
-		return os.File{}, SetupError{Err: err}
+		return TestInfo{}, SetupError{Err: err}
 	}
 	rootFile, err := os.Open(rootPath)
 	if err != nil {
 		err = errorCleanup(err, rootPath)
 		if errors.Is(err, CleanupError{}) {
-			return os.File{}, err
+			return TestInfo{}, err
 		}
-		return os.File{}, SetupError{Err: err}
+		return TestInfo{}, SetupError{Err: err}
 	}
 
 	files, err := buildFileStructure(rootPath)
 	if err != nil {
-		return os.File{}, SetupError{Err: err}
+		return TestInfo{}, SetupError{Err: err}
 	}
 
 	err = fillFiles(files)
 	if err != nil {
-		return os.File{}, SetupError{Err: err}
+		return TestInfo{}, SetupError{Err: err}
 	}
 
-	return *rootFile, err
+	result := TestInfo{
+		RootPath:       rootFile.Name(),
+		RootFile:       *rootFile,
+		PathMap:        setupTestContent(files),
+		TestLibPath:    libraryPath,
+		TestConfigPath: configPath,
+		Testing:        t,
+	}
+	return result, err
+}
+
+func setupTestContent(files map[os.File][]string) map[string][]string {
+	result := map[string][]string{}
+	for file, content := range files {
+		result[file.Name()] = content
+	}
+	return result
 }

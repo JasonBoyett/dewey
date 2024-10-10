@@ -44,7 +44,6 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 	// create the root file
 	fileName := filepath.Join(base, "root.txt")
 	rootFile, err := os.Create(fileName)
-	defer rootFile.Close()
 	if err != nil {
 		return map[os.File][]string{}, SetupError{Err: err}
 	}
@@ -60,19 +59,18 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 	// create file1.txt
 	fileName = filepath.Join(dir1, "file1.txt")
 	file1, err := os.Create(fileName)
-	defer file1.Close()
 	if err != nil {
 		return map[os.File][]string{}, SetupError{Err: err}
 	}
-	files[*file1] = []string{"Hello from the Dewey test suite!"}
+	files[*file1] = []string{}
 
 	// create image1.png
 	fileName = filepath.Join(dir1, "image1.png")
 	image1, err := os.Create(fileName)
-	defer image1.Close()
 	if err != nil {
 		return map[os.File][]string{}, SetupError{Err: err}
 	}
+	files[*image1] = []string{}
 
 	// create dir2
 	dir2 := filepath.Join(base, "dir2")
@@ -91,34 +89,34 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 	// create word_doc1.docx
 	fileName = filepath.Join(subDir1, "word_doc1.docx")
 	wordDoc1, err := os.Create(fileName)
-	defer wordDoc1.Close()
 	if err != nil {
 		return map[os.File][]string{}, SetupError{Err: err}
 	}
+	files[*wordDoc1] = []string{}
 
 	// create word_doc2.docx
 	fileName = filepath.Join(subDir1, "word_doc2.docx")
 	wordDoc2, err := os.Create(fileName)
-	defer wordDoc2.Close()
 	if err != nil {
 		return map[os.File][]string{}, SetupError{Err: err}
 	}
+	files[*wordDoc2] = []string{}
 
 	// create some_image.jpg
 	fileName = filepath.Join(subDir1, "some_image.jpg")
 	someImage, err := os.Create(fileName)
-	defer someImage.Close()
 	if err != nil {
 		return map[os.File][]string{}, SetupError{Err: err}
 	}
+	files[*someImage] = []string{}
 
 	// create word_doc3.docx
 	fileName = filepath.Join(subDir1, "word_doc3.docx")
 	wordDoc3, err := os.Create(fileName)
-	defer wordDoc3.Close()
 	if err != nil {
 		return map[os.File][]string{}, SetupError{Err: err}
 	}
+	files[*wordDoc3] = []string{}
 
 	// create sub_dir2
 	subDir2 := filepath.Join(dir2, "sub_dir2")
@@ -129,7 +127,6 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 
 	fileName = filepath.Join(subDir2, "some_code1.rb")
 	someCode1, err := os.Create(fileName)
-	defer someCode1.Close()
 	if err != nil {
 		return map[os.File][]string{}, SetupError{Err: err}
 	}
@@ -138,7 +135,6 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 
 	fileName = filepath.Join(subDir2, "some_code2.rb")
 	someCode2, err := os.Create(fileName)
-	defer someCode2.Close()
 	if err != nil {
 		return map[os.File][]string{}, SetupError{Err: err}
 	}
@@ -147,7 +143,6 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 
 	fileName = filepath.Join(subDir2, "some_code3.rb")
 	someCode3, err := os.Create(fileName)
-	defer someCode3.Close()
 	if err != nil {
 		return map[os.File][]string{}, SetupError{Err: err}
 	}
@@ -156,7 +151,6 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 
 	fileName = filepath.Join(subDir2, "SomeCode4.java")
 	someCode4, err := os.Create(fileName)
-	defer someCode4.Close()
 	if err != nil {
 		return map[os.File][]string{}, SetupError{Err: err}
 	}
@@ -176,30 +170,33 @@ func buildFileStructure(base string) (map[os.File][]string, error) {
 		return map[os.File][]string{}, SetupError{Err: err}
 	}
 
-	fileName = filepath.Join(subDir1, "hidden_file1.txt")
+	fileName = filepath.Join(hiddenDir, "hidden_file1.txt")
 	hiddenFile1, err := os.Create(fileName)
-	defer hiddenFile1.Close()
 	if err != nil {
 		return map[os.File][]string{}, SetupError{Err: err}
 	}
-	fileName = filepath.Join(subDir1, "hidden_file2.txt")
+	files[*hiddenFile1] = []string{"I am a hidden file"}
+
+	fileName = filepath.Join(hiddenDir, "hidden_file2.txt")
 	hiddenFile2, err := os.Create(fileName)
-	defer hiddenFile2.Close()
 	if err != nil {
 		return map[os.File][]string{}, SetupError{Err: err}
 	}
-	fileName = filepath.Join(subDir1, "hidden_file3.txt")
+	files[*hiddenFile2] = []string{"I've got a secret and you'll never know it"}
+
+	fileName = filepath.Join(hiddenDir, "hidden_file3.txt")
 	hiddenFile3, err := os.Create(fileName)
-	defer hiddenFile3.Close()
 	if err != nil {
 		return map[os.File][]string{}, SetupError{Err: err}
 	}
-	fileName = filepath.Join(subDir1, "hidden_file4.txt")
+	files[*hiddenFile3] = []string{"I have all the log in credentials. You'll never find them"}
+
+	fileName = filepath.Join(hiddenDir, "hidden_file4.txt")
 	hiddenFile4, err := os.Create(fileName)
-	defer hiddenFile4.Close()
 	if err != nil {
 		return map[os.File][]string{}, SetupError{Err: err}
 	}
+	files[*hiddenFile4] = []string{"I am the key to the kingdom"}
 
 	return files, nil
 }
@@ -210,7 +207,7 @@ func fillFiles(files map[os.File][]string) error {
 
 	for file, lines := range files {
 		wg.Add(1)
-		go fillFile(
+		fillSingleFile(
 			&file,
 			lines,
 			errorChan,
@@ -229,13 +226,14 @@ func fillFiles(files map[os.File][]string) error {
 	return nil
 }
 
-func fillFile(
+func fillSingleFile(
 	file *os.File,
 	lines []string,
 	ch chan<- error,
 	wg *sync.WaitGroup,
 ) {
 	defer wg.Done()
+	defer file.Close()
 	writer := bufio.NewWriter(file)
 	defer writer.Flush()
 	for _, line := range lines {

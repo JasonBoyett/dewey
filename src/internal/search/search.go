@@ -3,6 +3,7 @@ package search
 import (
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 // Search the file system for files with the given extension
@@ -24,5 +25,24 @@ func Search(start string, extension string) ([]string, error) {
 		return nil, FileSearchError{Err: err}
 	}
 
-	return files, nil
+	return excludeHidden(files), nil
+}
+
+func excludeHidden(unfiltered []string) []string {
+	var filtered []string
+	for _, path := range unfiltered {
+		if !isHidden(path) {
+			filtered = append(filtered, path)
+		}
+	}
+	return filtered
+}
+
+func isHidden(path string) bool {
+	for _, part := range strings.Split(path, string(os.PathSeparator)) {
+		if strings.HasPrefix(part, ".") {
+			return true
+		}
+	}
+	return false
 }

@@ -1,4 +1,0 @@
-The rest of this directory should be empty.
-If there are any other files or directories in this directory the previous
-test failed to clean up.
-Do not manually create any files or directories in this directory.
